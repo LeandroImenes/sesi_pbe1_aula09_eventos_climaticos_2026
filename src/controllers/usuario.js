@@ -48,8 +48,30 @@ const alterar = (req, res) => {
     }
 }
 
+const excluir = (req, res) => {
+    const id = Number(req.params.id)
+
+    const query = 'DELETE FROM usuarios WHERE id = ?;'
+    try{
+        con.query(query, [id], (err, results) =>{
+            if (err) {
+                console.error(err)
+                res.status(500).json({ error: 'Erro ao excluir usuário'})
+            }else if (results.affectedRows === 0){
+                res.status(404).json({ error: 'Usuário não encontrado '})
+            } else {
+                res.json({ message: 'Usuário excluído com sucesso' })
+            }
+        })
+    }catch (error) {
+        console.error(error)
+        res.status(400).json({ error: 'Erro ao excluir usuário', details: 'Informe id como parâmetro'})
+    }
+}
+
 module.exports = {
     listar,
     alterar,
+    excluir,
     cadastrar
 }
